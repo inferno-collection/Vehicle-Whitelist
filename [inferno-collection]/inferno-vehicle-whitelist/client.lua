@@ -1,4 +1,4 @@
--- Inferno Collection Vehicle Whitelist Version 1.0 Alpha
+-- Inferno Collection Vehicle Whitelist Version 1.1 Alpha
 --
 -- Copyright (c) 2019, Christopher M, Inferno Collection. All rights reserved.
 --
@@ -10,8 +10,7 @@
 
 --
 -- Resource Configuration
--- Please note, there is also some configuration required in the
--- `server.lua` file, so make sure to edit that file as well
+-- Please note, there is also some configuration required in the `server.lua` file, so make sure to edit that file as well
 --
 -- PLEASE RESTART SERVER AFTER MAKING CHANGES TO THIS CONFIGURATION
 --
@@ -20,7 +19,7 @@ local Config = {} -- Do not edit this line
 Config.Whitelisted = {} -- Do not edit this line
 
 -- List of vehicle names to be whitelisted to police
-Config.Whitelisted.Police = {
+Config.Whitelisted.police = {
     "FBI",
     "FBI2",
     "PBus",
@@ -41,13 +40,13 @@ Config.Whitelisted.Police = {
 }
 
 -- List of vehicle names to be whitelisted to Fire and EMS
-Config.Whitelisted.FireEMS = {
+Config.Whitelisted.fireems = {
     "Ambulance",
     "FireTruk" -- Not a typo, this is the spawn name
 }
 
 -- List of vehicle names to be whitelisted to Military
-Config.Whitelisted.Military = {
+Config.Whitelisted.military = {
     "APC",
     "Barracks",
     "Barracks2",
@@ -57,7 +56,7 @@ Config.Whitelisted.Military = {
 }
 
 -- Custom list of vehicle names to be whitelisted
-Config.Whitelisted.Custom = {
+Config.Whitelisted.custom = {
     "Insurgent",
     "Insurgent2",
     "Dump",
@@ -70,8 +69,10 @@ Config.Whitelisted.Custom = {
 --		Do not make changes below this line unless you know what you are doing!
 --
 
-local Player = {}
-Player.Vehicle = {}
+-- Checked vehicles
+local Vehicles = {}
+local LastVehicle
+local LastVehicleAllowed = false
 
 -- On client join server
 AddEventHandler("onClientMapStart", function()
@@ -81,101 +82,62 @@ AddEventHandler("onClientMapStart", function()
     })
 end)
 
--- Draw message on client screen
-RegisterNetEvent("Vehicle-Whitelist:Return:Message")
-AddEventHandler("Vehicle-Whitelist:Return:Message", function(Message, Flash)
-    -- Tell GTA that a string will be passed
-    SetNotificationTextEntry("STRING")
-    -- Pass temporary variable to notification
-    AddTextComponentString(Message)
-    -- Draw new notification on client's screen
-    DrawNotification(Flash, true)
+-- Return for vehicle allowed check
+RegisterNetEvent("Vehicle-Whitelist:Message")
+AddEventHandler("Vehicle-Whitelist:Message", function(Text, Flash)
+    NewNoti(Text, Flash)
 end)
 
 -- Return for vehicle allowed check
 RegisterNetEvent("Vehicle-Whitelist:Return:Check")
 AddEventHandler("Vehicle-Whitelist:Return:Check", function(Allowed)
     if not Allowed then
-        ClearPedTasksImmediately(Player.Ped)
-        TriggerEvent("Vehicle-Whitelist:Return:Message", "~r~You are not allowed to use this vehicle.", true)
-        Player.Vehicle.Allowed = false
-    else
-        Player.Vehicle.Allowed = true
+        local PlayerPed = PlayerPedId()
+        local Vehicle = GetVehiclePedIsIn(PlayerPed, false)
+
+        ClearPedTasksImmediately(PlayerPed)
+        NewNoti("~r~You are not allowed to use this vehicle.", true)
+
+        if Vehicle then TaskLeaveVehicle(PlayerPed, Vehicle, 16) end
     end
+
+    LastVehicleAllowed = Allowed
 end)
 
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
 
-        Player.Ped = PlayerPedId()
-        Player.Vehicle.Entity = GetVehiclePedIsTryingToEnter(Player.Ped)
+        local PlayerPed = PlayerPedId()
+        local Vehicle = GetVehiclePedIsTryingToEnter(PlayerPed)
 
         -- If player is trying to enter a vehicle
-        if Player.Vehicle.Entity ~= 0 then
-            if not Player.Vehicle.Allowed or Player.Vehicle.Last ~= Player.Vehicle.Entity then
-                Player.Vehicle.Last = Player.Vehicle.Entity
-                Player.Vehicle.Hash = GetEntityModel(Player.Vehicle.Entity)
+        if (Vehicle ~= 0 and LastVehicle ~= Vehicle) or not LastVehicleAllowed then
+            local VehicleHash = GetEntityModel(Vehicle)
+            LastVehicle = Vehicle
+            LastVehicleAllowed = true
 
-                local Found = false
-
-                -- Loop though all the police vehicles
-                for _, Vehicle in ipairs(Config.Whitelisted.Police) do
-                    if not Found then
-                        local Key = GetHashKey(Vehicle)
-                        if Key == Player.Vehicle.Hash then
-                            Found = "police"
-                            break
+            for VehicleType, WhitelistVehicles in pairs(Config.Whitelisted) do
+                for _, WhitelistVehicle in pairs(WhitelistVehicles) do
+                    if GetHashKey(WhitelistVehicle) == VehicleHash then
+                        if not Vehicles[VehicleType] then
+                            TriggerServerEvent("Vehicle-Whitelist:Check", VehicleType)
+                        elseif Vehicles[VehicleType] == "notallowed" then
+                            TriggerEvent("Vehicle-Whitelist:Return:Check", false)
                         end
-                    end
-                end
 
-                if not Found then
-                    -- Loop though all the fire/ems vehicles
-                    for _, Vehicle in ipairs(Config.Whitelisted.FireEMS) do
-                        if not Found then
-                            local Key = GetHashKey(Vehicle)
-                            if Key == Player.Vehicle.Hash then
-                                Found = "fireems"
-                                break
-                            end
-                        end
+                        goto EndLoop
                     end
-                end
-
-                if not Found then
-                    -- Loop though all the military vehicles
-                    for _, Vehicle in ipairs(Config.Whitelisted.Military) do
-                        if not Found then
-                            local Key = GetHashKey(Vehicle)
-                            if Key == Player.Vehicle.Hash then
-                                Found = "military"
-                                break
-                            end
-                        end
-                    end
-                end
-
-                if not Found then
-                    -- Loop though all the custom vehicles
-                    for _, Vehicle in ipairs(Config.Whitelisted.Custom) do
-                        if not Found then
-                            local Key = GetHashKey(Vehicle)
-                            if Key == Player.Vehicle.Hash then
-                                Found = "custom"
-                                break
-                            end
-                        end
-                    end
-                end
-
-                if Found then
-                    TriggerServerEvent("Vehicle-Whitelist:Check", Found)
-                else
-                    Player.Vehicle.Allowed = true
                 end
             end
+            ::EndLoop::
         end
 
     end
 end)
+
+function NewNoti(Text, Flash)
+    SetNotificationTextEntry("STRING")
+    AddTextComponentString(Text)
+    DrawNotification(Flash, true)
+end

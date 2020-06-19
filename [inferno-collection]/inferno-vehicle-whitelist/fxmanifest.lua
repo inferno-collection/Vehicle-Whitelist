@@ -1,4 +1,4 @@
--- Inferno Collection Vehicle Whitelist Version 1.0 Alpha
+-- Inferno Collection Vehicle Whitelist Version 1.1 Alpha
 --
 -- Copyright (c) 2019, Christopher M, Inferno Collection. All rights reserved.
 --
@@ -8,11 +8,18 @@
 -- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. THE SOFTWARE MAY NOT BE SOLD.
 --
 
--- Manifest Version
-resource_manifest_version "44febabe-d386-4d18-afbe-5e627f4af937"
+name "Vehicle Whitelist - Inferno Collection"
 
--- Client Script
+description "Allows server owners to place vehicles into one of four predefined whitelists in the config, which will then require the respective password in-game before players can enter these vehicles."
+
+author "Inferno Collection (inferno-collection.com)"
+
+version "1.1 Alpha"
+
+url "https://inferno-collection.com"
+
 client_script "client.lua"
 
--- Server Script
 server_script "server.lua"
+
+fx_version "bodacious"

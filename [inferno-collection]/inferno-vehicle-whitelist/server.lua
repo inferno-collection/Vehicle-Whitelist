@@ -1,4 +1,4 @@
--- Inferno Collection Vehicle Whitelist Version 1.0 Alpha
+-- Inferno Collection Vehicle Whitelist Version 1.1 Alpha
 --
 -- Copyright (c) 2019, Christopher M, Inferno Collection. All rights reserved.
 --
@@ -46,6 +46,7 @@ Allowed.custom = {}
 RegisterCommand("unlock", function(source, Args)
     if Args[1] then
         local Class = Args[1]:lower()
+
         if Class == "police" or Class == "fireems" or Class == "military" or Class == "custom" then
             if Args[2] then
                 if not Allowed[Class][source] then
@@ -54,21 +55,21 @@ RegisterCommand("unlock", function(source, Args)
                     if Config.Passwords[Class] == Password then
                         Allowed[Class][source] = true
 
-                        TriggerClientEvent("Vehicle-Whitelist:Return:Message", source, "~g~Access to " .. Args[1] .. " vehicles granted!", false)
+                        TriggerClientEvent("Vehicle-Whitelist:Message", source, "~g~Access to " .. Args[1] .. " vehicles granted!", false)
                     else
-                        TriggerClientEvent("Vehicle-Whitelist:Return:Message", source, "~r~Password incorrect!", true)
+                        TriggerClientEvent("Vehicle-Whitelist:Message", source, "~r~Password incorrect!", true)
                     end
                 else
-                    TriggerClientEvent("Vehicle-Whitelist:Return:Message", source, "~g~You already have access to " .. Args[1] .. " vehicles!", false)
+                    TriggerClientEvent("Vehicle-Whitelist:Message", source, "~g~You already have access to " .. Args[1] .. " vehicles!", false)
                 end
             else
-                TriggerClientEvent("Vehicle-Whitelist:Return:Message", source, "~r~No password provided!", true)
+                TriggerClientEvent("Vehicle-Whitelist:Message", source, "~r~No password provided!", true)
             end
         else
-            TriggerClientEvent("Vehicle-Whitelist:Return:Message", source, "~r~" .. Args[1] .. " is not a valid vehicle class!", true)
+            TriggerClientEvent("Vehicle-Whitelist:Message", source, "~r~" .. Args[1] .. " is not a valid vehicle class!", true)
         end
     else
-        TriggerClientEvent("Vehicle-Whitelist:Return:Message", source, "~r~No arguments provided!", true)
+        TriggerClientEvent("Vehicle-Whitelist:Message", source, "~r~No arguments provided!", true)
     end
 end)
 
