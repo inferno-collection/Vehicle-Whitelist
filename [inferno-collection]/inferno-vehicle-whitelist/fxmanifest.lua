@@ -1,4 +1,4 @@
--- Inferno Collection Vehicle Whitelist Version 1.1 Beta
+-- Inferno Collection Vehicle Whitelist Version 1.1 Alpha
 --
 -- Copyright (c) 2019, Christopher M, Inferno Collection. All rights reserved.
 --
@@ -14,7 +14,7 @@ description "Allows server owners to place vehicles into one of four predefined 
 
 author "Inferno Collection (inferno-collection.com)"
 
-version "1.1 Beta"
+version "1.1 Alpha"
 
 url "https://inferno-collection.com"
 
