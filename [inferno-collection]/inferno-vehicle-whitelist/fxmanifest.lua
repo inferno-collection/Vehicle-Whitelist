@@ -1,4 +1,4 @@
--- Inferno Collection Vehicle Whitelist Version 1.1 Alpha
+-- Inferno Collection Vehicle Whitelist Version 1.1 Beta
 --
 -- Copyright (c) 2019, Christopher M, Inferno Collection. All rights reserved.
 --
@@ -14,7 +14,7 @@ description "Allows server owners to place vehicles into one of four predefined 
 
 author "Inferno Collection (inferno-collection.com)"
 
-version "1.1 Alpha"
+version "1.1 Beta"
 
 url "https://inferno-collection.com"
 
@@ -23,3 +23,5 @@ client_script "client.lua"
 server_script "server.lua"
 
 fx_version "bodacious"
+
+game "gta5"
