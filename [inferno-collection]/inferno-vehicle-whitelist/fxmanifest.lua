@@ -10,7 +10,7 @@
 
 name "Vehicle Whitelist - Inferno Collection"
 
-description "Allows server owners to place vehicles into one of four predefined whitelists in the config, which will then require the respective password in-game before players can enter these vehicles."
+description "Allows server owners to place vehicles into predefined whitelists in the config, which will then require the respective password in-game before players can enter these vehicles."
 
 author "Inferno Collection (inferno-collection.com)"
 

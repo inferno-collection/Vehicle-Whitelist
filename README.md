@@ -11,6 +11,11 @@ Presently, the following can be customized:
 - The passwords for each whitelist
 - Adding and removing vehicle lists 
 
+***
+### Development Showcase Video
+[![Watch the Development Showcase video](https://img.youtube.com/vi/8abUkGbzpk0/maxresdefault.jpg)](https://www.youtube.com/watch?v=8abUkGbzpk0)
+***
+
 > The Inferno Collection Team
 ***
 Interested in keeping up-to-date with what we are working on? [Check out our roadmap](https://inferno-collection.com/roadmap).
